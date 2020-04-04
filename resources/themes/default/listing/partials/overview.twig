@@ -1,0 +1,107 @@
+<div class="row mb-3">
+    <div class="col-sm-12">
+
+        <div class="card overview">
+
+            <div class="card-body p-0">
+                {% if listing.carousel | length >= 1 %}
+                <div class="row">
+
+
+                    <div class="col-sm-12">
+
+                        <div id="carouselExampleControls" class="carousel slide" data-interval="false"
+                             data-ride="carousel">
+                            <div class="carousel-inner">
+                                {% for k,image in listing.carousel %}
+                                <div class="carousel-item {{(k==0)?'active':''}}">
+                                    <img class="d-block w-100" src="{{image.photo}}" alt="{{listing.title}} photo {{k}} {{image.ext}}">
+									
+									{% if image.type == 'video' %}
+									<video controls style="height: 100%; position: absolute; width: 100%; top: 0;">
+										<source src="{{image.file}}" width="1024" height="552" type="video/mp4">
+										Your browser does not support the video tag.
+									</video>
+									{% endif %}
+									
+									{% if image.type == 'pdf' %}
+									<div class="carousel-caption text-center">
+										<a href="{{image.file}}" target="_blank" class="text-white font-weight-bold"><i class="mdi mdi-arrow-down" aria-hidden="true"></i> {{__("Download")}}</a>
+									</div>
+									{% endif %}
+									
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% if listing.carousel | length > 1 %}
+                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                               data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">{{ __("Previous") }}</span>
+                            </a>
+                            <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                               data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">{{ __("Next") }}</span>
+                            </a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+                {% endif %}
+
+            </div>
+            <div class="card-body">
+                <div class="row">
+
+
+                    <div class="col-sm-12">
+                        <h6 class="mt-2">{{ __("Overview") }}</h6>
+
+                        <hr/>
+
+                        <div class="row">
+                            <div class="col-md-12" id="listing-description">
+                                {% if input_get('translate') %}
+                                <a href="{{url_current()}}" ic-get-from="{{ url_current() }}"
+                                   ic-select-from-response="#listing-description"
+                                   ic-target="#listing-description">{{ __("View original") }}</a>
+                                    <iframe src="{{ url_current() }}?iframe=true"
+                                            style="width: 100%; height: auto; border: none; overflow: hidden;"
+                                            frameborder="0" scrolling="no" onload="resizeIframe(this)"></iframe>
+                                    <script>
+                                        function resizeIframe(obj) {
+                                            obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+                                        }
+                                    </script>
+                                {% else %}
+                                        {% if listing.locale != current_locale() %}
+                                        <a href="{{ url_current() }}?translate=true"
+                                           ic-get-from="{{ url_current() }}?translate=true"
+                                           ic-select-from-response="#listing-description"
+                                           ic-target="#listing-description">{{ __("Translate to :locale using Google Translate", {'locale' : current_locale_native()}) }}</a>
+                                        {% endif %}
+                                        {{ listing.description | raw }}
+                                {% endif %}
+
+                            </div>
+                        </div>
+
+                        {% if listing.tags %}
+                            {% for tag in listing.tags %}
+                                <a href="{{ route(setting('marketplace_index'), {'tagged' : tag}) }}" class="badge badge-pill badge-danger font-weight-bold text-uppercase mr-1 pr-3 pl-3 mt-3">{{ tag }}</a>
+                            {% endfor %}
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <br/>
+                <br/>
+
+            </div>
+        </div>
+    </div>
+</div>

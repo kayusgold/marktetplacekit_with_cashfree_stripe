@@ -1,0 +1,25 @@
+{% extends "account.master" %}
+
+{% block user_area %}
+
+    <div class="card panel-default" data-turbolinks="false">
+        <h6 class="card-header bg-white">
+            <i class="mdi mdi-account mr-2"></i>
+            {{ __('Payment Method') }}</h6>
+        <div class="card-body">
+
+            {% include 'notifications' %}
+
+            {% for payment_provider in payment_providers %}
+                {%  if payment_provider.is_offline %}
+                    {% include [ 'offlinepayment::form' ] %}
+                {%  else %}
+
+                    {% include [ payment_provider.key ~ '::form', 'account.payment_methods.generic'] with {'payment_provider' : payment_provider}  %}
+                {% endif %}
+            {% endfor %}
+
+
+        </div>
+    </div>
+{% endblock %}
